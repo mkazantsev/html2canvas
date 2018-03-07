@@ -197,7 +197,9 @@ export default class CanvasRenderer implements RenderTarget<HTMLCanvasElement> {
         this.path(path);
         this.ctx.fillStyle = this.ctx.createPattern(this.resizeImage(image, imageSize), 'repeat');
         this.ctx.translate(offsetX, offsetY);
+        this.ctx.scale(1 / this.options.scale, 1 / this.options.scale);
         this.ctx.fill();
+        this.ctx.scale(1, 1);
         this.ctx.translate(-offsetX, -offsetY);
     }
 
@@ -288,9 +290,10 @@ export default class CanvasRenderer implements RenderTarget<HTMLCanvasElement> {
         }
 
         const canvas = this.canvas.ownerDocument.createElement('canvas');
-        canvas.width = size.width;
-        canvas.height = size.height;
+        canvas.width = size.width * this.options.scale;
+        canvas.height = size.height * this.options.scale;
         const ctx = canvas.getContext('2d');
+        ctx.scale(this.options.scale, this.options.scale);
         ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, size.width, size.height);
         return canvas;
     }
